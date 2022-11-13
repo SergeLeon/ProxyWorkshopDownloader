@@ -1,8 +1,14 @@
 from flask import Flask, request, redirect
 
-from services import get_search_page, get_workshop_page, get_workshop_list_page, get_collection_page, download
+from services import get_search_page, get_workshop_page, get_workshop_list_page, download
 
 app = Flask(__name__)
+
+
+def get_headers():
+    headers = dict(request.headers)
+    headers.pop("Host")
+    return headers
 
 
 @app.route("/")
@@ -13,24 +19,20 @@ def index():
 @app.route("/search/")
 def search():
     query = request.url.split("/search/")[-1]
-    return get_search_page(query=query)
+    return get_search_page(query=query, headers=get_headers())
 
 
 @app.route("/browse/")
 def workshop_list():
     app_id = request.args["appid"]
-    query = request.url.split(app_id)[-1]
-    return get_workshop_list_page(app_id, query)
+    query = request.url.split("/")[-1]
+    return get_workshop_list_page(app_id, query, headers=get_headers())
 
 
 @app.route("/<int:app_id>/<int:workshop_id>/")
 def workshop_page(app_id, workshop_id):
-    return get_workshop_page(app_id, workshop_id)
-
-
-@app.route("/collection/<int:collection_id>")
-def collection(collection_id):
-    return get_collection_page(collection_id)
+    query = request.url.split("?", 1)[-1]
+    return get_workshop_page(app_id, workshop_id, query=query, headers=get_headers())
 
 
 @app.route("/<int:app_id>/<int:workshop_id>/download")

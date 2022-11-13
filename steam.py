@@ -21,10 +21,10 @@ def create_junction(in_path: Path, out_path: Path):
 
 
 def workshop_download(app_id, workshop_id, install_dir, validate=True):
-    workshop_download_path = Path(steam.installation_path) / "steamapps" / "workshop" / "content" / str(app_id)
+    workshop_download_path = Path(steam_path) / "steamapps" / "workshop" / "content" / str(app_id)
     create_junction(workshop_download_path, install_dir)
     steam.workshop_update(app_id=app_id, workshop_id=workshop_id,
-                          install_dir=steam.installation_path,
+                          install_dir=steam_path,
                           validate=validate)
 
 
