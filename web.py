@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect
 
-from services import get_search_page, get_workshop_page, get_workshop_list_page, download
+from services import get_search_page, get_workshop_page, get_workshop_list_page, download, init_new_mods_path
 
 app = Flask(__name__)
 
@@ -14,6 +14,13 @@ def get_headers():
 @app.route("/")
 def index():
     return redirect("/search/")
+
+
+@app.route("/folder", methods=["POST"])
+def select_folder():
+    mods_folder = request.form["mods_folder"]
+    init_new_mods_path(mods_folder)
+    return redirect(request.referrer)
 
 
 @app.route("/search/")
